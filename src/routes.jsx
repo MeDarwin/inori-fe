@@ -1,9 +1,25 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Index } from "./pages/Index";
+import ProtectedRoutes from "./layout/ProtectedRoutes";
+import Credits from "./pages/Credits";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Index />,
+    element: <Login />,
+  },
+  {
+    path: "/credits",
+    element: <Credits />,
+  },
+  {
+    element: <ProtectedRoutes />,
+    children: [
+      {
+        path: "/home",
+        element: <Home />,
+      },
+    ],
   },
 ]);
