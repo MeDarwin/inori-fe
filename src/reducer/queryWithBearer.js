@@ -4,8 +4,9 @@ import { config } from "../config/app";
 export const queryWithBearer = fetchBaseQuery({
   baseUrl: config.apiUrl,
   prepareHeaders: (headers, { getState, endpoint }) => {
+    const token = getState().auth.token;
     headers.set("Accept", "application/json");
     if (endpoint === "login") return headers;
-    headers.set("Authorization", `Bearer ${getState().auth.token}`);
+    if (token) headers.set("Authorization", `Bearer ${token}`);
   },
 });

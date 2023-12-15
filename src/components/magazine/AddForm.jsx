@@ -1,47 +1,100 @@
 import PropTypes from "prop-types";
-import { BsFillXCircleFill } from "react-icons/bs";
+import { useState } from "react";
+import { BsArrowBarUp, BsFillXCircleFill, BsTrashFill } from "react-icons/bs";
+import { ToastContainer, toast } from "react-toastify";
+import { magazineApi } from "../../reducer/services/magazineApi";
 import Button from "../Button";
 import Input from "../Input";
 
 const MagazineAddForm = ({ isOpen, setIsOpen }) => {
+  const [title, setTitle] = useState(null);
+  const [body, setBody] = useState(null);
+  const [footer, setFooter] = useState(null);
+  const [postSchedule, setPostSchedule] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
+  const [addMagazine, { isLoading }] = magazineApi.useAddMagazineMutation();
+
+  /**@param {import('react-toastify').ToastOptions} option */
+  const notify = (type, msg, option = {}) => {
+    toast[type](msg, option);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addMagazine({ title, body, footer, postSchedule, thumbnail })
+      .unwrap()
+      .then((data) => {
+        notify("success", data?.message);
+        e.target.reset();
+      })
+      .catch(({ data }) => {
+        Object.values(data?.errors).forEach((err) =>
+          notify("error", err.toLocaleString(), { position: toast.POSITION.TOP_LEFT })
+        );
+      });
+  };
+
   if (isOpen)
     return (
-      <div className="absolute min-w-full bg-black bg-opacity-50 h-screen max-h-screen flex items-center overflow-y-auto">
-        <div className="relative w-full sm:w-1/2 mx-auto bg-white px-4 py-6 rounded-lg">
-          <span className="flex justify-end items-center text-red-800 text-sm mb-3">
-            <h1 className="text-2xl mb-1 text-red-800 mr-auto">Add new magazine</h1>
-            <BsFillXCircleFill className="inline-block cursor-pointer" size={20} onClick={() => setIsOpen(false)} />
-          </span>
-          <form>
-            <label>
-              <span>Title</span>
-              <Input type="text" placeholder="Title" className="mb-3" />
-            </label>
-            <label>
-              <span>Body</span>
-              <textarea
-                className="mb-3 rounded-md appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-red-800 focus:border-red-800 focus:z-10 sm:text-sm"
-                cols="30"
-                rows="10"
-              ></textarea>
-            </label>
-            <label>
-              <span>Footer</span>
-              <Input type="text" placeholder="footer" className="mb-3" />
-            </label>
-            <label>
-              <span>Post Schedule</span>
-              <Input
-                type="datetime-local"
-                min={new Date().toISOString().slice(0, 16)}
-                placeholder="post_schedule"
-                className="mb-3"
-              />
-            </label>
-            <Button>Add</Button>
-          </form>
+      <>
+        <ToastContainer autoClose={8000} />
+        <div className="absolute min-w-full bg-black bg-opacity-50 h-screen max-h-screen flex overflow-y-auto">
+          <div className="relative w-full mx-2 sm:mx-auto sm:w-1/2 bg-white px-4 py-6 rounded-lg h-fit my-10">
+            <span className="flex justify-end items-center text-red-800 text-sm mb-3">
+              <h1 className="text-2xl mb-1 text-red-800 mr-auto">Add new magazine</h1>
+              <BsFillXCircleFill className="inline-block cursor-pointer" size={20} onClick={() => setIsOpen(false)} />
+            </span>
+            <form onSubmit={handleSubmit}>
+              <label>
+                <span className="after:content-['*'] after:text-red-400 after:ml-0.5">Title</span>
+                <Input type="text" onChange={(e) => setTitle(e.target.value)} placeholder="Title" className="mb-3" />
+              </label>
+              <label>
+                <span className="after:content-['*'] after:text-red-800 after:ml-0.5">Body</span>
+                <textarea
+                  placeholder="Body"
+                  onChange={(e) => setBody(e.target.value)}
+                  className="mb-3 rounded-md appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-red-800 focus:border-red-800 focus:z-10 sm:text-sm"
+                  cols="30"
+                  rows="10"
+                ></textarea>
+              </label>
+              <label>
+                <span>Footer</span>
+                <span className="text-xs ms-2 text-gray-500">optional</span>
+                <Input type="text" onChange={(e) => setFooter(e.target.value)} placeholder="footer" className="mb-3" />
+              </label>
+              <label>
+                <span>Post Schedule</span>
+                <span className="text-xs ms-2 text-gray-500">optional</span>
+                <Input
+                  type="datetime-local"
+                  onChange={(e) => setPostSchedule(e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)}
+                  placeholder="post_schedule"
+                  className="mb-3"
+                />
+              </label>
+              <label>
+                <span>Thumbnail</span>
+                <span className="group mb-3 w-fit rounded border border-red-800 cursor-pointer text-red-800 px-2 py-1 hover:bg-red-800 disabled:bg-gray-400 block">
+                  <BsArrowBarUp className="group-hover:text-white inline-block text-red-800 me-3" size={20} />
+                  <span className="group-hover:text-white">Upload File</span>
+                </span>
+                <input type="file" onChange={(e) =>{setThumbnail(e.target.files[0])}} className="hidden" />
+              </label>
+              {thumbnail && <p className="inline-block me-3">Uploaded file : {thumbnail.name}</p>}
+              {thumbnail && (
+                <button type="button" className="group mb-5 rounded border hover:bg-red-800 hover:text-white border-red-800 text-red-800 p-1 px-2 w-fit" onClick={() => setThumbnail(null)}>
+                  <BsTrashFill className="inline-block group-hover:text-white text-red-800" size={20} />
+                </button>
+              )}
+              <Button disabled={isLoading} type="submit">
+                {isLoading ? "Adding..." : "Add"}
+              </Button>
+            </form>
+          </div>
         </div>
-      </div>
+      </>
     );
 };
 MagazineAddForm.propTypes = {

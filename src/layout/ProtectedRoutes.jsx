@@ -8,21 +8,24 @@ const ProtectedRoutes = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
+  const fetchUser = authApi.endpoints.getMe;
+  let req;
 
-  if (token === null) return <Navigate replace to="/login" />;
-  if (!user) dispatch(authApi.endpoints.getMe.initiate(null, { forceRefetch: true }));
+  if (token === null) return <Navigate to="/login" />;
+  if (!user) req = dispatch(fetchUser.initiate(null, { forceRefetch: true, subscribe: false }));
 
-  return user ? (
-    <BaseLayout />
-  ) : (
-    <LoadingScreen>
-      <p>
-        <span className="animate-bounce inline-block mr-2">Getting</span>
-        <span className="animate-bounce animate-delay-100 inline-block mr-2">user</span>
-        <span className="animate-bounce animate-delay-200 inline-block">information</span>
-      </p>
-    </LoadingScreen>
-  );
+  if (req) {
+    return (
+      <LoadingScreen>
+        <p>
+          <span className="animate-bounce inline-block mr-2">Getting</span>
+          <span className="animate-bounce animate-delay-100 inline-block mr-2">user</span>
+          <span className="animate-bounce animate-delay-200 inline-block">information</span>
+        </p>
+      </LoadingScreen>
+    );
+  }
+  return <BaseLayout />;
 };
 
 export default ProtectedRoutes;

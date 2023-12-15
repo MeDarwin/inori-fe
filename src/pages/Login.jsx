@@ -22,18 +22,19 @@ const Login = () => {
     }
     doLogin({ username, password })
       .unwrap()
-      .then(() => navigate("/dashboard"))
+      .then(() => navigate("/"))
       .catch((err) => {
         setMessage(err.data.message);
       });
   };
-  if (token) return <Navigate to="/dashboard" />;
+  if (token) {
+    return <Navigate to="/" />;}
   return (
     <main className="bg-[#fcf7f4]">
       <div className="container mx-auto h-screen">
         <div className="sm:w-1/2 h-full w-full m-auto flex px-5 sm:px-0 items-center justify-center">
           <div className="w-full">
-          <Link to="/" className="inline-block text-red-800 text-sm">&lt; To Home</Link>
+          <Link to="/" className="inline-block text-red-800 text-sm">&lt; Home</Link>
             <LogoKanji className="sm:text-6xl text-3xl" />
             <h6 className="sm:text-base text-sm text-center text-gray-500 mb-8">Japanese club at its finest.</h6>
             <form onSubmit={handleSubmit}>

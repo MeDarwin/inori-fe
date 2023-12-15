@@ -1,5 +1,6 @@
 import { Bar } from "react-chartjs-2";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
 import Title from "../components/Title";
 
 const data = {
@@ -13,10 +14,12 @@ const data = {
   ],
 };
 const Home = () => {
+  const user = useSelector((state) => state.auth.user);
+  if(user?.role === "member") return <Navigate to="/" />
   return (
     <>
       <div className="min-w-screen bg-cover h-64 bg-repeat-x bg-auto border-b-8 border-red-800 mb-4"></div>
-      <div className="container mx-auto">
+      <div className="container mx-auto bg-[#fcf7f4]">
         <div className="flex border-b-2 border-red-800 gap-4 justify-center items-center pb-3">
           <p className="text-red-800">Manage - </p>
           <Link

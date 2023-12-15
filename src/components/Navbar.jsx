@@ -1,18 +1,22 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useLogoutMutation } from "../reducer/services/authApi";
+import { authApi, useLogoutMutation } from "../reducer/services/authApi";
 import LoadingScreen from "./LoadingScreen";
 import LogoKanji from "./LogoKanji";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [doLogout, { isLoading }] = useLogoutMutation();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
+  const [doLogout, { isLoading }] = useLogoutMutation();
+  let req;
 
+  if (token && !user) req = dispatch(authApi.endpoints.getMe.initiate(null, { forceRefetch: true, subscribe: false }));
   return (
     <>
       {isLoading && <LoadingScreen>Logging out...</LoadingScreen>}
-      <nav className="transition text-red-950 hover:border-b-0 border-b-2 border-red-800 hover:text-white bg-red-800 bg-opacity-0 hover:bg-opacity-100 px-1 sm:px-4 py-4 fixed top-0 w-full backdrop-blur-md">
+      <nav className="transition text-red-950 hover:border-b-0 border-b-2 border-red-800 hover:text-white bg-red-800 bg-opacity-0 hover:bg-opacity-100 px-1 sm:px-4 py-4 fixed top-0 w-full backdrop-blur-md shadow-md shadow-red-800">
         <div className="mx-auto flex justify-between items-center">
           <div className="flex items-center">
             <LogoKanji
@@ -24,7 +28,7 @@ const Navbar = () => {
           <div className="hidden sm:flex items-center gap-5">
             <Link to={"/magazine"}>Magazine</Link>
             <Link to={"/"}>Home</Link>
-            {user && <Link to={"/dashboard"}>Dashboard</Link>}
+            {user && user.role !== "member" && <Link to={"/dashboard"}>Dashboard</Link>}
           </div>
           {user ? (
             <div className="group/user flex items-center gap-5 relative">
@@ -42,6 +46,8 @@ const Navbar = () => {
                 </button>
               </div>
             </div>
+          ) : req ? (
+            <p>Getting user information...</p>
           ) : (
             <Link to={"/login"}>Login</Link>
           )}
