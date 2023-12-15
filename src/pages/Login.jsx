@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import LogoKanji from "../components/LogoKanji";
 import { useLoginMutation } from "../reducer/services/authApi";
@@ -22,17 +22,18 @@ const Login = () => {
     }
     doLogin({ username, password })
       .unwrap()
-      .then(() => navigate("/home"))
+      .then(() => navigate("/dashboard"))
       .catch((err) => {
         setMessage(err.data.message);
       });
   };
-  if (token) return <Navigate to="/home" />;
+  if (token) return <Navigate to="/dashboard" />;
   return (
     <main className="bg-[#fcf7f4]">
       <div className="container mx-auto h-screen">
         <div className="sm:w-1/2 h-full w-full m-auto flex px-5 sm:px-0 items-center justify-center">
-          <div className="w-full -mt-28">
+          <div className="w-full">
+          <Link to="/" className="inline-block text-red-800 text-sm">&lt; To Home</Link>
             <LogoKanji className="sm:text-6xl text-3xl" />
             <h6 className="sm:text-base text-sm text-center text-gray-500 mb-8">Japanese club at its finest.</h6>
             <form onSubmit={handleSubmit}>
@@ -61,7 +62,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="mt-5 rounded bg-red-800 text-white px-4 py-2 w-full font-bold enabled:hover:bg-red-900 disabled:bg-gray-600"
+                className="mt-5 rounded bg-red-800 text-white px-4 py-2 w-full font-bold enabled:hover:bg-red-900 disabled:bg-gray-400"
               >
                 {isLoading ? "Logging in..." : "Login"}
               </button>
