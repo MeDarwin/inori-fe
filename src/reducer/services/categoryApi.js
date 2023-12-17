@@ -14,16 +14,25 @@ export const categoryApi = createApi({
       }),
       providesTags: ["Category"],
     }),
+    //Get category by name
+    getCategoryByName: builder.query({
+      query: (name) => ({
+        url: `/category/${name}`,
+        method: "GET",
+      }),
+      providesTags: ["Category"],
+    }),
     //Add category to database
     addCategory: builder.mutation({
       query: (name) => ({
         url: "/category",
         method: "POST",
-        body: {name},
+        body: { name },
       }),
       invalidatesTags: ["Category"],
     }),
   }),
 });
 
-export const { useGetCategoriesQuery, useAddCategoryMutation } = categoryApi;
+export const { useGetCategoriesQuery, useAddCategoryMutation, useLazyGetCategoriesQuery, useGetCategoryByNameQuery } =
+  categoryApi;

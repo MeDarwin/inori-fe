@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { config } from "../../config/app";
 import { useDeleteMagazineMutation, useVerifyMagazineMutation } from "../../reducer/services/magazineApi";
 
-const MagazineCard = ({ id, title, created_at, creator_username, thumbnail, is_verified, verified_by }) => {
+const MagazineCard = ({ id, title, created_at, creator_username, thumbnail, is_verified, verified_by, category }) => {
   const user = useSelector((state) => state.auth.user);
   const [deleteMagazine, { isLoading }] = useDeleteMagazineMutation();
   const [verifyMagazine, { isLoading: isLoadingVerify }] = useVerifyMagazineMutation();
@@ -20,6 +20,7 @@ const MagazineCard = ({ id, title, created_at, creator_username, thumbnail, is_v
         toast.error("Magazine not verified");
       });
   };
+
   const hanldeDelete = () => {
     deleteMagazine(id)
       .then(() => {
@@ -43,8 +44,9 @@ const MagazineCard = ({ id, title, created_at, creator_username, thumbnail, is_v
             />
           )}
           <h2 className="text-xl font-bold text-red-800">{title}</h2>
-          <h6 className="text-xs text-gray-500">{created_at.slice(0, -3)}</h6>
+          <h6 className="text-xs text-gray-500">{created_at?.slice(0, -3)}</h6>
           <h4 className="text-base">Author: {creator_username}</h4>
+          <p className="text-xs">Categories: {category?.map(({ name }) => name)}</p>
           {!is_verified ? (
             <p className="text-xs text-red-500">Not verified yet</p>
           ) : (
@@ -71,6 +73,7 @@ const MagazineCard = ({ id, title, created_at, creator_username, thumbnail, is_v
 MagazineCard.propTypes = {
   id: PropTypes.number,
   title: PropTypes.string,
+  category: PropTypes.array,
   created_at: PropTypes.string,
   creator_username: PropTypes.string,
   verified_by: PropTypes.string,

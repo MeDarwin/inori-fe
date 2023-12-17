@@ -15,7 +15,13 @@ export const recordApi = createApi({
         },
       }),
     }),
+    getVisitLog: builder.query({
+      query: () => ({
+        url: "/visit-count",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useVisitQuery } = recordApi;
+export const { useVisitQuery, useGetVisitLogQuery } = recordApi;

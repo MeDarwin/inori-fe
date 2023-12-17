@@ -6,6 +6,7 @@ export const magazineApi = createApi({
   baseQuery: queryWithBearer,
   tagTypes: ["Magazine"],
   endpoints: (builder) => ({
+    //Get all magazine from database
     getMagazine: builder.query({
       query: () => ({
         url: "/magazine",
@@ -13,6 +14,7 @@ export const magazineApi = createApi({
       }),
       providesTags: ["Magazine"],
     }),
+    //Get magazine by id
     getMagazineById: builder.query({
       query: (id) => ({
         url: `/magazine/${id}`,
@@ -20,6 +22,7 @@ export const magazineApi = createApi({
       }),
       providesTags: ["Magazine"],
     }),
+    //Add magazine to database
     addMagazine: builder.mutation({
       query: ({ title, body, footer, post_schedule, thumbnail }) => {
         const formData = new FormData();
@@ -36,6 +39,7 @@ export const magazineApi = createApi({
       },
       invalidatesTags: ["Magazine"],
     }),
+    //Delete magazine
     deleteMagazine: builder.mutation({
       query: (id) => ({
         url: `/magazine/${id}`,
@@ -43,6 +47,7 @@ export const magazineApi = createApi({
       }),
       invalidatesTags: ["Magazine"],
     }),
+    //Verify magazine
     verifyMagazine: builder.mutation({
       query: (id) => ({
         url: `/magazine/verify/${id}`,
@@ -50,6 +55,28 @@ export const magazineApi = createApi({
       }),
       invalidatesTags: ["Magazine"],
     }),
+    //Add category to magazine
+    addCategoryToMagazine: builder.mutation({
+      query: ({ magazineId, categoryName }) => ({
+        url: `/magazine/${magazineId}/category`,
+        method: "POST",
+        params: {
+          category_name: categoryName,
+        },
+      }),
+      invalidatesTags: ["Magazine"],
+    }),
+    //Delete category from magazine
+    deleteCategoryFromMagazine: builder.mutation({
+      query: ({ magazineId, categoryName }) => ({
+        url: `/magazine/${magazineId}/category`,
+        method: "DELETE",
+        params: {
+          category_name: categoryName,
+        },
+      }),
+      invalidatesTags: ["Magazine"],
+    })
   }),
 });
 
@@ -59,4 +86,6 @@ export const {
   useGetMagazineByIdQuery,
   useDeleteMagazineMutation,
   useVerifyMagazineMutation,
+  useAddCategoryToMagazineMutation,
+  useDeleteCategoryFromMagazineMutation
 } = magazineApi;

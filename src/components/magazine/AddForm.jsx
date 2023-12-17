@@ -37,7 +37,7 @@ const MagazineAddForm = ({ isOpen, setIsOpen }) => {
     return (
       <>
         <div className="fixed min-w-full bg-black bg-opacity-50 max-h-screen h-screen overflow-y-auto z-50">
-          <div className="relative w-full mx-2 sm:mx-auto sm:w-1/2 bg-white px-4 py-6 rounded-lg max-h-full my-10">
+          <div className="relative w-full mx-2 sm:mx-auto sm:w-1/2 bg-white px-4 py-6 rounded-lg my-10">
             <span className="flex justify-end items-center text-red-800 text-sm mb-3 overflow-y-auto">
               <h1 className="text-2xl mb-1 text-red-800 mr-auto">Add new magazine</h1>
               <BsFillXCircleFill className="inline-block cursor-pointer" size={20} onClick={() => setIsOpen(false)} />
@@ -79,11 +79,26 @@ const MagazineAddForm = ({ isOpen, setIsOpen }) => {
                   <BsArrowBarUp className="group-hover:text-white inline-block text-red-800 me-3" size={20} />
                   <span className="group-hover:text-white">Upload File</span>
                 </span>
-                <input type="file" onChange={(e) =>{setThumbnail(e.target.files[0])}} className="hidden" />
+                <input
+                  type="file"
+                  onInput={(e) => {
+                    console.log(e.target.files,e.value);
+                    setThumbnail(e.target.files[0]);
+                    e.value = null;
+                  }}
+                  multiple={false}
+                  className="hidden"
+                  accept="image/*"
+                  id="thumbnail"
+                />
               </label>
-              {thumbnail && <p className="inline-block me-3">Uploaded file : {thumbnail.name}</p>}
+              {thumbnail && <p className="inline-block me-3 break-all">Uploaded file : {thumbnail.name}</p>}
               {thumbnail && (
-                <button type="button" className="group mb-5 rounded border hover:bg-red-800 hover:text-white border-red-800 text-red-800 p-1 px-2 w-fit" onClick={() => setThumbnail(null)}>
+                <button
+                  type="button"
+                  className="group mb-5 rounded border hover:bg-red-800 hover:text-white border-red-800 text-red-800 p-1 px-2 w-fit"
+                  onClick={() => setThumbnail(null)}
+                >
                   <BsTrashFill className="inline-block group-hover:text-white text-red-800" size={20} />
                 </button>
               )}

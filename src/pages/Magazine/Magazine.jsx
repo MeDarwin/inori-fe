@@ -15,7 +15,7 @@ const MagazineList = ({ items }) => {
   const user = useSelector((state) => state.auth.user);
   //for admin
   if (user?.role === "admin")
-    return items?.map(({ id, title, created_at, creator_username, thumbnail, is_verified, verified_by }) => (
+    return items?.map(({ id, title, created_at, creator_username, thumbnail, is_verified, verified_by, category }) => (
       <Card
         key={id}
         id={id}
@@ -25,6 +25,7 @@ const MagazineList = ({ items }) => {
         thumbnail={thumbnail}
         is_verified={is_verified}
         verified_by={verified_by}
+        category={category}
       />
     ));
   //for normal user
@@ -50,18 +51,15 @@ MagazineList.propTypes = {
 const Magazine = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { magazine: magazineAwait } = useLoaderData();
-  const user = useSelector((state) => state.auth.user);
   const { data } = useGetMagazineQuery();
   return (
     <>
       <ToastContainer autoClose={8000} />
       {/*  ------------------------------ ADMIN ACTION ------------------------------ */}
-      {user?.role == "admin" && (
-        <>
-          <FloatingActionButton setIsOpen={setIsOpen} title="Add new magazine" />
-          <MagazineAddForm isOpen={isOpen} setIsOpen={setIsOpen} />
-        </>
-      )}
+      <>
+        <FloatingActionButton setIsOpen={setIsOpen} title="Add new magazine" />
+        <MagazineAddForm isOpen={isOpen} setIsOpen={setIsOpen} />
+      </>
       {/* ------------------------------ ADMIN ACTION ------------------------------ */}
 
       {/*  ----------------------------- MAIN COMPONENT -----------------------------  */}

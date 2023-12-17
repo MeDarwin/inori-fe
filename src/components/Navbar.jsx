@@ -39,7 +39,11 @@ const Navbar = () => {
               <div className="transition-all opacity-0 group-hover/user:opacity-100 absolute w-full p-2">
                 <button
                   className="bg-white text-red-800 py-1 w-full rounded-lg text-sm"
-                  onClick={doLogout}
+                  onClick={() =>
+                    doLogout()
+                      .unwrap()
+                      .then(() => window.location.reload())
+                  }
                   disabled={isLoading}
                   type="button"
                 >

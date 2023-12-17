@@ -6,6 +6,7 @@ import Home from "./pages/Dashboard";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Category from "./pages/category/Category";
+import CategoryDetail from "./pages/category/Detail";
 import MagazineDetail from "./pages/magazine/Detail";
 import Magazine from "./pages/magazine/Magazine";
 import Profile from "./pages/profile/Profile";
@@ -39,7 +40,19 @@ export const router = createBrowserRouter([
         loader: async ({ request }) => {
           const url = new URL(request.url);
           recordVisit(url.pathname, "Home");
-          return null;
+
+          const magazineReq = store.dispatch(magazineApi.endpoints.getMagazine.initiate());
+          const magazine = magazineReq.unwrap();
+          magazineReq.unsubscribe();
+
+          const categoryReq = store.dispatch(categoryApi.endpoints.getCategories.initiate());
+          const category = categoryReq.unwrap();
+          categoryReq.unsubscribe();
+
+          return defer({
+            magazine,
+            category,
+          });
         },
       },
       {
@@ -70,8 +83,13 @@ export const router = createBrowserRouter([
           const magazineDetail = magazineDetailReq.unwrap();
           magazineDetailReq.unsubscribe();
 
+          const categoryReq = store.dispatch(categoryApi.endpoints.getCategories.initiate());
+          const category = categoryReq.unwrap();
+          categoryReq.unsubscribe();
+
           return defer({
             magazineDetail,
+            category,
           });
         },
       },
@@ -88,6 +106,25 @@ export const router = createBrowserRouter([
 
           return defer({
             category,
+          });
+        },
+      },
+      {
+        path: "/category/:name",
+        element: <CategoryDetail />,
+        loader: async ({ request, params }) => {
+          const url = new URL(request.url);
+          const { name } = params;
+          recordVisit(url.pathname, "Category");
+
+          const categoryDetailReq = store.dispatch(
+            categoryApi.endpoints.getCategoryByName.initiate(name, { forceRefetch: true })
+          );
+          const categoryDetail = categoryDetailReq.unwrap();
+          categoryDetailReq.unsubscribe();
+
+          return defer({
+            categoryDetail,
           });
         },
       },
