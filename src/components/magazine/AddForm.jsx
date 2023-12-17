@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { BsArrowBarUp, BsFillXCircleFill, BsTrashFill } from "react-icons/bs";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { magazineApi } from "../../reducer/services/magazineApi";
 import Button from "../Button";
 import Input from "../Input";
@@ -36,10 +36,9 @@ const MagazineAddForm = ({ isOpen, setIsOpen }) => {
   if (isOpen)
     return (
       <>
-        <ToastContainer autoClose={8000} />
-        <div className="absolute min-w-full bg-black bg-opacity-50 h-screen max-h-screen flex overflow-y-auto">
-          <div className="relative w-full mx-2 sm:mx-auto sm:w-1/2 bg-white px-4 py-6 rounded-lg h-fit my-10">
-            <span className="flex justify-end items-center text-red-800 text-sm mb-3">
+        <div className="fixed min-w-full bg-black bg-opacity-50 max-h-screen h-screen overflow-y-auto z-50">
+          <div className="relative w-full mx-2 sm:mx-auto sm:w-1/2 bg-white px-4 py-6 rounded-lg max-h-full my-10">
+            <span className="flex justify-end items-center text-red-800 text-sm mb-3 overflow-y-auto">
               <h1 className="text-2xl mb-1 text-red-800 mr-auto">Add new magazine</h1>
               <BsFillXCircleFill className="inline-block cursor-pointer" size={20} onClick={() => setIsOpen(false)} />
             </span>

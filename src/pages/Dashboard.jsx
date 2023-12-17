@@ -29,7 +29,7 @@ const Home = () => {
             Magazine
           </Link>
           <Link
-            to=""
+            to="/category"
             className="rounded hover:cursor-pointer bg-red-800 text-white text-sm px-4 py-1 font-bold hover:bg-red-900"
           >
             Category

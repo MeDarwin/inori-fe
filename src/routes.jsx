@@ -5,7 +5,11 @@ import Credits from "./pages/Credits";
 import Home from "./pages/Dashboard";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import Category from "./pages/category/Category";
+import MagazineDetail from "./pages/magazine/Detail";
 import Magazine from "./pages/magazine/Magazine";
+import Profile from "./pages/profile/Profile";
+import { categoryApi } from "./reducer/services/categoryApi";
 import { magazineApi } from "./reducer/services/magazineApi";
 import { store } from "./store";
 import { recordVisit } from "./utils/recordVisit";
@@ -47,14 +51,43 @@ export const router = createBrowserRouter([
 
           const magazineReq = store.dispatch(magazineApi.endpoints.getMagazine.initiate());
           const magazine = magazineReq.unwrap();
-          magazine.catch((err) => {
-            console.log(err);
-            throw new Response("test", { status: 500 });
-          });
           magazineReq.unsubscribe();
 
           return defer({
             magazine,
+          });
+        },
+      },
+      {
+        path: "/magazine/:id",
+        element: <MagazineDetail />,
+        loader: async ({ request, params }) => {
+          const url = new URL(request.url);
+          const { id } = params;
+          recordVisit(url.pathname, "Magazine");
+
+          const magazineDetailReq = store.dispatch(magazineApi.endpoints.getMagazineById.initiate(id));
+          const magazineDetail = magazineDetailReq.unwrap();
+          magazineDetailReq.unsubscribe();
+
+          return defer({
+            magazineDetail,
+          });
+        },
+      },
+      {
+        path: "/category",
+        element: <Category />,
+        loader: async ({ request }) => {
+          const url = new URL(request.url);
+          recordVisit(url.pathname, "Category");
+
+          const categoryReq = store.dispatch(categoryApi.endpoints.getCategories.initiate());
+          const category = categoryReq.unwrap();
+          categoryReq.unsubscribe();
+
+          return defer({
+            category,
           });
         },
       },
@@ -70,6 +103,15 @@ export const router = createBrowserRouter([
         loader: async ({ request }) => {
           const url = new URL(request.url);
           recordVisit(url.pathname, "Dashboard");
+          return null;
+        },
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+        loader: async ({ request }) => {
+          const url = new URL(request.url);
+          recordVisit(url.pathname, "Profile");
           return null;
         },
       },

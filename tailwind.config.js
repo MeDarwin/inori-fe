@@ -1,3 +1,4 @@
+/*eslint-env node*/
 import plugin from "tailwindcss/plugin";
 
 /** @type {import('tailwindcss').Config} */
@@ -24,5 +25,6 @@ export default {
         { values: theme('transitionDelay') }
       )
     }),
+    require('@tailwindcss/typography'),
   ],
 };

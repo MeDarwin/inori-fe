@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <>
       {isLoading && <LoadingScreen>Logging out...</LoadingScreen>}
-      <nav className="transition text-red-950 hover:border-b-0 border-b-2 border-red-800 hover:text-white bg-red-800 bg-opacity-0 hover:bg-opacity-100 px-1 sm:px-4 py-4 fixed top-0 w-full backdrop-blur-md shadow-md shadow-red-800">
+      <nav className="transition text-red-950 hover:border-b-0 border-b-2 z-40 border-red-800 hover:text-white bg-red-800 bg-opacity-0 hover:bg-opacity-100 px-1 sm:px-4 py-4 fixed top-0 w-full backdrop-blur-md shadow-md shadow-red-800">
         <div className="mx-auto flex justify-between items-center">
           <div className="flex items-center">
             <LogoKanji
@@ -29,6 +29,7 @@ const Navbar = () => {
             <Link to={"/magazine"}>Magazine</Link>
             <Link to={"/"}>Home</Link>
             {user && user.role !== "member" && <Link to={"/dashboard"}>Dashboard</Link>}
+            {user && <Link to={"/profile"}>Profile</Link>}
           </div>
           {user ? (
             <div className="group/user flex items-center gap-5 relative">
